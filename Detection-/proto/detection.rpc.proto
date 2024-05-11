@@ -1,0 +1,17 @@
+syntax = "proto3";
+package example.detection.rpc;
+import "detection.proto";
+
+service DetectionService{
+    rpc RegisterUser(example.detection.Customer) returns (example.detection.resetDeviceResponse);
+    rpc LoginUser(example.detection.login) returns (example.detection.loginResponse);
+    rpc ForgotPassword(example.detection.ForgotPassword) returns (example.detection.commonResponse);
+    rpc ResetDevice(example.detection.ForgotPassword) returns (example.detection.resetDeviceResponse);
+
+    //admin side rpc
+
+    rpc getRiskDetails(example.detection.risDetailCustomer) returns (example.detection.riskDetailsCustomerResponse);
+    
+    
+
+}

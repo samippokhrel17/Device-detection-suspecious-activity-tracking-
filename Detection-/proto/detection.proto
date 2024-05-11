@@ -1,0 +1,82 @@
+syntax = "proto3";
+package example.detection;
+
+message Customer {
+  
+    string firstName = 1;
+    string lastName = 2;
+    string email = 3;
+    string mobileNumber = 4;
+    string password = 5;
+    string otp = 6;
+    string customerPin = 7;
+ 
+} 
+
+message commonResponse
+{
+    int32 status = 1;
+    string message = 2;
+}
+
+message login{
+    
+    string mobileNumber = 1;
+    string password = 2;
+    string otp = 3;
+    string deviceIdentifier = 4;
+}
+
+message loginResponse
+{
+    int32 status = 1;
+    string message = 2;
+    string accessToken = 3;
+    string refreshToken = 4;
+
+}
+
+message ForgotPassword
+{
+    string customerPin = 1;
+    string mobileNumber = 2;
+    string password =3;
+
+}
+
+message resetDeviceResponse
+{
+    int32 status = 1;
+    string message = 2;
+    string deviceIdentifier = 3;
+}
+
+message risDetailCustomer
+{
+    string mobileNumber =1;
+}
+
+message riskDetailCustomerList
+{
+    string mobile_number = 1;
+    string device_risk = 2;
+    string password_reset_risk = 3;
+    string device_reset_risk = 4;
+}
+
+
+message extraDetailsList
+{
+    string function_name = 1;
+    string risk_percentage = 2;
+}
+
+message riskDetailsCustomerResponse
+
+{
+    repeated riskDetailCustomerList data = 1;
+    repeated extraDetailsList riskDetails = 2;
+    string message = 3;
+    int32 status = 4;
+}
+

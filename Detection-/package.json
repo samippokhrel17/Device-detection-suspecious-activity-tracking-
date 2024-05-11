@@ -1,0 +1,33 @@
+{
+  "name": "detection_grpc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate:migration": "npx sequelize-cli migration:generate --name",
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate:pre": "node server/scripts/create_database.js",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo --name",
+    "migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",
+    "generate:seed": "npx sequelize-cli seed:generate --name",
+    "seed": "npx sequelize-cli db:seed --seed",
+    "seed:all": "npx sequelize-cli db:seed:all",
+    "seed:undo:all": "npx sequelize-cli db:seed:undo:all",
+    "pull:all": "git pull origin develop && git pull origin testing && npm pull origin staging"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.10.7",
+    "@grpc/proto-loader": "^0.7.13",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "http-status": "^1.7.4",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.9.7",
+    "nodemailer": "^6.9.13",
+    "redis": "^4.6.13",
+    "sequelizer": "^1.1.4"
+  }
+}
