@@ -10,8 +10,8 @@ sendingMail.send = async message => {
             secure: false,
             service: "gmail",
             auth: {
-                user:"balancehumanity49@gmail.com",
-                pass: "mdgh lnzk hxpd htsw",
+                user:"1da19cs141.cs@drait.edu.in",
+                pass: "Drait@123",
             },
         });
         await transporter.sendMail({

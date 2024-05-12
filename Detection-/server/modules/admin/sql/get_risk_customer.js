@@ -70,7 +70,7 @@ const { mysqlHelper } = require("../../../helper");
         let extraDetailsOfRisk = await mysqlHelper.format(`SELECT
         mobile_number,
         function_name,
-        ROUND(SUM(negative_suspicious_mark) / (SELECT SUM(negative_suspicious_mark) FROM Detection_log_customer WHERE mobile_number = '9862383579') * 100, 2) AS risk_percentage
+        ROUND(SUM(negative_suspicious_mark) / (SELECT SUM(negative_suspicious_mark) FROM Detection_log_customer WHERE mobile_number = ${call.mobileNumber}) * 100, 2) AS risk_percentage
     FROM
         Detection.Detection_log_customer
     WHERE
