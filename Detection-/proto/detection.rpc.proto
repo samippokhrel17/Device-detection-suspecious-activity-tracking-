@@ -11,7 +11,10 @@ service DetectionService{
     //admin side rpc
 
     rpc getRiskDetails(example.detection.risDetailCustomer) returns (example.detection.riskDetailsCustomerResponse);
-    
+    rpc adminLimitSetup(example.detection.limitSetupAdmin) returns (example.detection.commonResponse);
+    rpc adminLogin(example.detection.adminLogin) returns (example.detection.loginResponse);
+
+
     
 
 }

@@ -39,6 +39,22 @@ up: async (queryInterface, Sequelize) => {
             allowNull: false,
             
         },
+
+        is_daily: {
+            type: DataTypes.TINYINT,
+            allowNull: true,
+            
+        },
+        is_weekly: {
+            type: DataTypes.TINYINT,
+            allowNull: true,
+            
+        },
+        is_monthly: {
+            type: DataTypes.TINYINT,
+            allowNull: true,
+            
+        },
         created_date: {
             type: DataTypes.BIGINT,
             allowNull: false,

@@ -22,7 +22,6 @@ module.exports = async (call, callback) => {
             const match = await bcrypt.compare(call.customerPin, userExistCheckResult[0].customer_pin);
 
             if (match) {
-         
 
             let newDeviceIdentifier = v4();
                 let updateQuery = await dbHelper.format(
@@ -39,21 +38,17 @@ module.exports = async (call, callback) => {
                         device_identifier:newDeviceIdentifier,
                         update_date:null
                     }
-    
-    
                 let resetDeviceLog = await dbHelper.format(`INSERT INTO Detection.reset_device_log SET ?`, [historyObj]);
                     await dbHelper.query(resetDeviceLog);
                     return (response = {status: httpStatus.OK, message: "Reset device success!",deviceIdentifier:newDeviceIdentifier});
                 }
             } else {
-
                 let payload=
                 {
                     functionName:"INVALID-CUSTOMER-PIN(While reset device)",
                     mobileNumber:call.mobileNumber,
                     positiveMark:0,
                     negativeMark:10 
-
                 }
                 await suspiciousLogMaintainer.setLog(payload);
                 return (response = {status: httpStatus.BAD_REQUEST, message: "Invalid customer pin!"});
@@ -62,7 +57,6 @@ module.exports = async (call, callback) => {
     } catch (error) {
         console.error(error);
         return callback(error)
-    
     }
 };
 })();

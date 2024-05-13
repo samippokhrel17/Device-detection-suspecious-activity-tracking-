@@ -119,7 +119,47 @@
         }
     };
 
+    exports.adminLimitSetup = async (request, res) => {
 
+        try {
 
+            client.adminLimitSetup(request.body,
+                (err, data) => {
+                    if (err) {
+                        res.status(400).send(err)
+                    }
+                    
+                    else {
+                        res.status(200).send(data)
+                    }
+                }
+
+            )
+        } catch (error) {
+            res.send(`Error occured ${error}`)
+
+        }
+    };
+    exports.adminLogin = async (request, res) => {
+
+        try {
+
+            client.adminLogin(request.body,
+                (err, data) => {
+                    if (err) {
+                        res.status(400).send(err)
+                    }
+                    
+                    else {
+                        res.status(200).send(data)
+                    }
+                }
+
+            )
+        } catch (error) {
+            res.send(`Error occured ${error}`)
+
+        }
+    };
 
 })();

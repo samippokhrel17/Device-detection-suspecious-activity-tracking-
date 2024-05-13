@@ -12,6 +12,8 @@ const router = express.Router();
       router.use("/forgotPassword",detectionRoutes);
       router.use("/resetDevice",detectionRoutes);
       router.use("/getRiskDetails",detectionRoutes);
+      router.use("/adminLimitSetup",detectionRoutes);
+      router.use("/adminLogin",detectionRoutes);
       // router.use("/resetDevice",customerMiddleware,detectionRoutes);
 
 

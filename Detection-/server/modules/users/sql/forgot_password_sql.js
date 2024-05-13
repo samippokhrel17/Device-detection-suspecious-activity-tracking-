@@ -69,7 +69,6 @@ module.exports = async (call, callback) => {
     } catch (error) {
         console.error(error);
         return callback(error)
-    
     }
 };
 })();

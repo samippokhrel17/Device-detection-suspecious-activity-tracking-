@@ -18,7 +18,8 @@ const server = new grpc.Server();
 const simpleProto = grpc.loadPackageDefinition(packageDefinition);
 // Grpc Methods done here
 const userServiceLoader = require('./modules/users/index');
-const adminServiceLoader =require("./modules/admin/index")
+const adminServiceLoader =require("./modules/admin/index");
+const admin = require("./modules/admin/index");
 
 server.addService(simpleProto.example.detection.rpc.DetectionService.service, {
   registerUser: userServiceLoader.registerUser,
@@ -27,7 +28,9 @@ server.addService(simpleProto.example.detection.rpc.DetectionService.service, {
   ResetDevice:userServiceLoader.ResetDevice,
 
   //admin controller
-  getRiskDetails:adminServiceLoader.getRiskDetails
+  getRiskDetails:adminServiceLoader.getRiskDetails,
+  adminLimitSetup:adminServiceLoader.adminLimitSetup,
+  adminLogin:adminServiceLoader.adminLogin,
 });
 
 server.bindAsync(

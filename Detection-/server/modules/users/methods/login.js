@@ -1,6 +1,6 @@
 "use strict";
 const httpStatus = require("http-status");
-const { jwtHelper} = require("./../../../helper");
+const { jwtHelper, mysqlHelper} = require("./../../../helper");
 const { validator } = require("./../helpers");
 const bcrypt = require("bcrypt");
 const dbHelper = require("./../../../helper/mysql");
@@ -26,7 +26,34 @@ module.exports = async (call, callback) => {
 
         if(deviceIdentifierResult[0].device_identifier !==call.request.deviceIdentifier)
             {
-                //Device reset request log
+                let query = await mysqlHelper.format(`select functionName, minPerDayCount, minPerWeekCount, minPerMonthCount
+                        from Detection.Limit_Setup where functionName ="RESET-DEVICE"`);
+                        let [queryResult] = await mysqlHelper.query(query);
+                        if(queryResult && queryResult.length >0)
+                            {
+                                let checkQuery = await mysqlHelper.format(`select count(*) as count from Detection_log_customer where function_name ="INCORRECT-PASSWORD-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                                let [checkResult]= await mysqlHelper.query(checkQuery);
+
+                                if(checkResult && checkResult.length >0)
+                                    {
+                             if(checkResult[0].count > queryResult[0].minPerDayCount)
+                                {
+                                    let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_daily = 1 where function_name = "DEVICE-CHANGE-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                                   await mysqlHelper.query(updateDaily);
+
+                                }
+                                else if(checkResult[0].count > queryResult[0].minPerWeekCount)
+                                    {
+                                        let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_weekly = 1 where function_name = "DEVICE-CHANGE-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                                        await mysqlHelper.query(updateDaily);
+                                    }
+                                    else if(checkResult[0].count > queryResult[0].minPerMonthCount)
+                                        {
+                                            let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_monthly = 1 where function_name = "DEVICE-CHANGE-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                                            await mysqlHelper.query(updateDaily);
+                                        }
+                                    }
+                            }
 
                 let payload=
                 {
@@ -103,6 +130,37 @@ module.exports = async (call, callback) => {
             let [redudancyCheckResult] = await dbHelper.query(redudancyCheck);
             if (redudancyCheckResult && redudancyCheckResult.length > 0) {
                 if (redudancyCheckResult[0].is_delete === 1) {
+
+                    let query = await mysqlHelper.format(`select functionName, minPerDayCount, minPerWeekCount, minPerMonthCount
+                    from Detection.Limit_Setup where functionName ="OTP"`);
+                    let [queryResult] = await mysqlHelper.query(query);
+                    if(queryResult && queryResult.length >0)
+                        {
+                            let checkQuery = await mysqlHelper.format(`select count(*) as count from Detection_log_customer where function_name ="INVALID-OTP-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                            let [checkResult]= await mysqlHelper.query(checkQuery);
+
+                            if(checkResult && checkResult.length >0)
+                                {
+                         if(checkResult[0].count > queryResult[0].minPerDayCount)
+                            {
+                                let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_daily = 1 where function_name = "INVALID-OTP-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                               await mysqlHelper.query(updateDaily);
+
+                            }
+                            else if(checkResult[0].count > queryResult[0].minPerWeekCount)
+                                {
+                                    let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_weekly = 1 where function_name = "INVALID-OTP-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                                    await mysqlHelper.query(updateDaily);
+                                }
+                                else if(checkResult[0].count > queryResult[0].minPerMonthCount)
+                                    {
+                                        let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_monthly = 1 where function_name = "INVALID-OTP-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                                        await mysqlHelper.query(updateDaily);
+                                    }
+                                }
+                        }
+
+
                     let payload=
                     {
                         functionName:"INVALID-OTP-ATTEMPT",
@@ -116,6 +174,37 @@ module.exports = async (call, callback) => {
                     return handleErrorResponse(callback, httpStatus.BAD_REQUEST, "OTP expired or incorrect");
                 }
             } else {
+
+                let query = await mysqlHelper.format(`select functionName, minPerDayCount, minPerWeekCount, minPerMonthCount
+                    from Detection.Limit_Setup where functionName ="OTP"`);
+                    let [queryResult] = await mysqlHelper.query(query);
+
+                    if(queryResult && queryResult.length >0){
+
+                let checkQuery = await mysqlHelper.format(`select count(*) as count from Detection_log_customer where function_name ="INVALID-OTP-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                let [checkResult]= await mysqlHelper.query(checkQuery);
+
+                if(checkResult && checkResult.length >0)
+                    {
+             if(checkResult[0].count > queryResult[0].minPerDayCount)
+                {
+                    let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_daily = 1 where function_name = "INVALID-OTP-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                   await mysqlHelper.query(updateDaily);
+
+                }
+                else if(checkResult[0].count > queryResult[0].minPerWeekCount)
+                    {
+                        let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_weekly = 1 where function_name = "INVALID-OTP-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                        await mysqlHelper.query(updateDaily);
+                    }
+                    else if(checkResult[0].count > queryResult[0].minPerMonthCount)
+                        {
+                            let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_monthly = 1 where function_name = "INVALID-OTP-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                            await mysqlHelper.query(updateDaily);
+                        }
+                    }
+                }
+
                 let payload=
                 {
                     functionName:"INVALID-OTP-ATTEMPT",
@@ -179,15 +268,45 @@ module.exports = async (call, callback) => {
         
                         }
                     } else {
-                        let payload=
-                        {
-                            functionName:"INCORRECT-PASSWORD-ATTEMPT",
-                            mobileNumber:call.request.mobileNumber,
-                            positiveMark:0,
-                            negativeMark:20 
-        
-                        }
-                        await suspiciousLogMaintainer.setLog(payload);
+                        let query = await mysqlHelper.format(`select functionName, minPerDayCount, minPerWeekCount, minPerMonthCount
+                        from Detection.Limit_Setup where functionName ="INCORRECT-PASSWORD"`);
+                        let [queryResult] = await mysqlHelper.query(query);
+                        if(queryResult && queryResult.length >0)
+                            {
+                                let checkQuery = await mysqlHelper.format(`select count(*) as count from Detection_log_customer where function_name ="INCORRECT-PASSWORD-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                                let [checkResult]= await mysqlHelper.query(checkQuery);
+
+                                if(checkResult && checkResult.length >0)
+                                    {
+                             if(checkResult[0].count > queryResult[0].minPerDayCount)
+                                {
+                                    let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_daily = 1 where function_name = "INCORRECT-PASSWORD-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                                   await mysqlHelper.query(updateDaily);
+
+                                }
+                                else if(checkResult[0].count > queryResult[0].minPerWeekCount)
+                                    {
+                                        let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_weekly = 1 where function_name = "INCORRECT-PASSWORD-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                                        await mysqlHelper.query(updateDaily);
+                                    }
+                                    else if(checkResult[0].count > queryResult[0].minPerMonthCount)
+                                        {
+                                            let updateDaily = await mysqlHelper.format(`update Detection.Detection_log_customer set is_monthly = 1 where function_name = "INCORRECT-PASSWORD-ATTEMPT" and mobile_number = "${call.request.mobileNumber}"`);
+                                            await mysqlHelper.query(updateDaily);
+                                        }
+                                    }
+                            }
+
+                            let payload=
+                            {
+                                functionName:"INCORRECT-PASSWORD-ATTEMPT",
+                                mobileNumber:call.request.mobileNumber,
+                                positiveMark:0,
+                                negativeMark:20 
+            
+                            }
+                            await suspiciousLogMaintainer.setLog(payload);
+                 
                         return callback(null,response={
                             status: httpStatus.BAD_REQUEST,
                             message: "Invalid password."});
