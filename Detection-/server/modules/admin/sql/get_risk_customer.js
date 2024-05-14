@@ -27,7 +27,7 @@ const { mysqlHelper } = require("../../../helper");
 
       if (flagResult && flagResult.length > 0) {
         // If any of the flags are set, proceed with risk detection
-
+   // Query to calculate risk based on login and password reset history
         let query = await dbHelper.format(`
           SELECT
             mobile_number,
@@ -79,6 +79,7 @@ const { mysqlHelper } = require("../../../helper");
         const [result] = await dbHelper.query(query);
 
         if (result && result.length > 0) {
+          // Query to fetch additional details of risk
           let extraDetailsOfRisk = await mysqlHelper.format(`
             SELECT
               mobile_number,
@@ -94,6 +95,7 @@ const { mysqlHelper } = require("../../../helper");
           const [extraDetailsOfRiskResult] = await dbHelper.query(extraDetailsOfRisk);
 
           if (extraDetailsOfRiskResult && extraDetailsOfRiskResult.length > 0) {
+              // If additional details of risk are found, update response
             response.status = httpStatus.OK;
             response.message = "Data fetched successfully";
             response.data = result;
@@ -106,8 +108,9 @@ const { mysqlHelper } = require("../../../helper");
           response.riskDetails = null;
         }
       } else {
+         // If required flags are not set, update response accordingly
         response.status = httpStatus.BAD_REQUEST;
-        response.message = "Data cannot be calculated as required flags are not set";
+        response.message = "Data cannot be calculated as Limit donot exceeds";
         response.data = null;
         response.riskDetails = null;
       }
